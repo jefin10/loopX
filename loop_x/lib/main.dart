@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:loop_x/constants/theme.dart';
 import 'auth/auth_gate.dart';
 import 'core/supabase_client.dart';
 
@@ -18,7 +19,7 @@ class LoopXApp extends StatelessWidget {
     return MaterialApp(
       title: 'LoopX',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.deepPurple),
+      theme: appTheme,
       home: const AuthGate(),
     );
   }

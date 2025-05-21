@@ -14,10 +14,19 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      decoration: InputDecoration(labelText: label, border: const OutlineInputBorder()),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: TextField(
+        
+        controller: controller,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+          hintText: "Enter your " + label, 
+          labelText: label,
+          border: const OutlineInputBorder(),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+        ),
+      ),
     );
   }
 }

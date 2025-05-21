@@ -17,4 +17,3 @@ class AuthGate extends StatelessWidget {
     );
   }
 }
-// This widget listens to the authentication state changes and navigates to the appropriate screen based on the user's authentication status.
