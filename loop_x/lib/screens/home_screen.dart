@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../auth/auth_service.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -16,6 +17,7 @@ class HomeScreen extends StatelessWidget {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await auth.signOut();
+              context.go('/login');
             },
           ),
         ],

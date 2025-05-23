@@ -8,6 +8,13 @@ final ThemeData appTheme = ThemeData(
     brightness: Brightness.dark,
     seedColor: Color(0xFFD100F0)	,
     
+    onSurface: Colors.white
+    
+  ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    backgroundColor: Colors.black,
+    selectedItemColor: Color(0xFFD100F0),
+    unselectedItemColor: Colors.white,
   ),
   
 );

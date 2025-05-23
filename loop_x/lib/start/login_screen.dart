@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../auth/auth_service.dart';
 import 'register_screen.dart';
 import '../widgets/custom_text_field.dart';
@@ -11,13 +12,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
+  final _emailCtrl = TextEditingController(text: "jefinfrancis10@gmail.com");
+  final _passCtrl = TextEditingController(text: "jefin@123");
   final _auth = AuthService();
 
   Future<void> _login() async {
     try {
-      await _auth.signIn(_emailCtrl.text, _passCtrl.text);
+      final res = await _auth.signIn(_emailCtrl.text, _passCtrl.text);
+      if (res.user!=null){
+        context.go('/home');
+      }
     } catch (e) {
       ScaffoldMessenger.of(
         context,

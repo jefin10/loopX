@@ -37,6 +37,7 @@ dependencies:
   flutter_dotenv: ^5.0.2
   supabase_flutter: ^2.2.0
   sign_in_button: ^3.0.0
+  go_router: ^14.0.0 
 
 dev_dependencies:
   flutter_test:

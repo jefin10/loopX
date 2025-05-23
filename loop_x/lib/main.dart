@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:loop_x/app_router.dart';
 import 'package:loop_x/constants/theme.dart';
-import 'auth/auth_gate.dart';
 import 'core/supabase_client.dart';
 
 void main() async {
@@ -16,11 +16,10 @@ class LoopXApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'LoopX',
-      debugShowCheckedModeBanner: false,
+    return MaterialApp.router(
+      title: 'loop_x',
       theme: appTheme,
-      home: const AuthGate(),
+      routerConfig: appRouter,
     );
   }
 }
