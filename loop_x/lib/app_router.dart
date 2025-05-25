@@ -97,7 +97,7 @@ final GoRouter appRouter= GoRouter(
         ),
         GoRoute(
           path: '/add',
-          builder:(context,state) => const AddScreen()
+          builder:(context,state) =>  AddScreen()
         ),
         GoRoute(
           path: '/chat',
