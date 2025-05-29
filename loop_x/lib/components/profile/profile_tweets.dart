@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:loop_x/components/common/post_card.dart';
+import 'package:loop_x/components/common/tweet_card.dart';
 
-class ProfilePosts extends StatefulWidget {
-  final List<Map<String, dynamic>> posts;
+class ProfileTweets extends StatefulWidget {
+  final List<Map<String, dynamic>> tweets;
 
-  const ProfilePosts({super.key, required this.posts});
+  const ProfileTweets({super.key, required this.tweets});
 
   @override
-  State<ProfilePosts> createState() => _ProfilePostsState();
+  State<ProfileTweets> createState() => _ProfileTweetsState();
 }
 
-class _ProfilePostsState extends State<ProfilePosts>{
+class _ProfileTweetsState extends State<ProfileTweets> {
   @override
   Widget build(BuildContext context) {
-    if (widget.posts.isEmpty) {
+    if (widget.tweets.isEmpty) {
       return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.photo_library_outlined,
+              Icons.chat_bubble_outline,
               size: 64,
               color: Colors.grey,
             ),
             SizedBox(height: 16),
             Text(
-              'No posts yet',
+              'No tweets yet',
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.grey,
@@ -37,16 +37,15 @@ class _ProfilePostsState extends State<ProfilePosts>{
     }
 
     return ListView.builder(
-      itemCount: widget.posts.length,
+      itemCount: widget.tweets.length,
       itemBuilder: (context, index) {
-        final post = widget.posts[index];
-        final profile = post['profiles'] as Map<String, dynamic>?;
+        final tweet = widget.tweets[index];
+        final profile = tweet['profiles'] as Map<String, dynamic>?;
         
-        return PostCard(
-          postId: post['id']?.toString() ?? '',
+        return TweetCard(
+          postId: tweet['id']?.toString() ?? '',
           username: profile?['username'] ?? 'Unknown',
-          text: post['text'] ?? '',
-          imageUrl: post['image_url'] ?? '',
+          text: tweet['text'] ?? '',
           profileImageUrl: profile?['avatar_url'] ?? '',
         );
       },

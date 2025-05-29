@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       final res = await _auth.signIn(_emailCtrl.text, _passCtrl.text);
       if (res.user!=null){
-        context.go('/home');
+        context.go('/');
       }
     } catch (e) {
       ScaffoldMessenger.of(

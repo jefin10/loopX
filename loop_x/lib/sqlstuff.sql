@@ -28,3 +28,29 @@ CREATE TABLE follows (
   created_at TIMESTAMP DEFAULT NOW(),
   PRIMARY KEY (follower_id, following_id)
 );
+create table chat_rooms (
+  id uuid primary key default gen_random_uuid(),
+  user1_id uuid not null,
+  user2_id uuid not null,
+  created_at timestamp with time zone default now(),
+  last_message text,
+  last_message_at timestamp with time zone,
+
+  constraint user_order check (user1_id < user2_id),
+  unique (user1_id, user2_id),
+
+  foreign key (user1_id) references auth.users(id),
+  foreign key (user2_id) references auth.users(id)
+);
+
+create table messages (
+  id uuid primary key default gen_random_uuid(),
+  chat_room_id uuid not null,
+  sender_id uuid not null,
+  content text not null,
+  created_at timestamp with time zone default now(),
+  seen boolean default false,
+
+  foreign key (chat_room_id) references chat_rooms(id) on delete cascade,
+  foreign key (sender_id) references auth.users(id)
+);

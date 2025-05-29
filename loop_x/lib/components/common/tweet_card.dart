@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class PostCard extends StatefulWidget {
+class TweetCard extends StatefulWidget {
   final String postId;
   final String username;
   final String text;
-  final String imageUrl;
   final String profileImageUrl;
   
-  const PostCard({
+  const TweetCard({
     super.key,
     required this.postId,
     required this.username,
     required this.text,
-    required this.imageUrl,
     required this.profileImageUrl,
   });
   
   @override
-  State<PostCard> createState() => _PostCardState(); 
+  State<TweetCard> createState() => _TweetCardState(); 
 }
 
-class _PostCardState extends State<PostCard> {
+class _TweetCardState extends State<TweetCard> {
   final supabase = Supabase.instance.client;
   final String currentUserId = Supabase.instance.client.auth.currentUser?.id ?? "";
   
@@ -62,7 +60,7 @@ class _PostCardState extends State<PostCard> {
   void _toggleLike() async {
     if (widget.postId.isEmpty || currentUserId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please log in to like posts')),
+        const SnackBar(content: Text('Please log in to like tweets')),
       );
       return;
     }
@@ -71,7 +69,6 @@ class _PostCardState extends State<PostCard> {
 
     try {
       if (isLiked) {
-        // Unlike the post
         await supabase
             .from('likes')
             .delete()
@@ -83,7 +80,6 @@ class _PostCardState extends State<PostCard> {
           isLiked = false;
         });
       } else {
-        // Like the post
         await supabase.from('likes').insert({
           'post_id': widget.postId,
           'user_id': currentUserId,
@@ -108,9 +104,9 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      elevation: 2,
+      elevation: 1,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -124,57 +120,33 @@ class _PostCardState extends State<PostCard> {
                   backgroundImage: widget.profileImageUrl.isNotEmpty
                       ? NetworkImage(widget.profileImageUrl)
                       : const AssetImage('assets/images/default_profile.png') as ImageProvider,
-                  radius: 20,
-                  onBackgroundImageError: (_, __) {
-                    // Handle image loading errors
-                  },
+                  radius: 18,
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     widget.username,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 16,
+                      fontSize: 15,
                     ),
                   ),
                 ),
               ],
             ),
             
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             
+            // Tweet text
             Text(
               widget.text,
               style: const TextStyle(
-                fontSize: 15,
-                height: 1.4,
+                fontSize: 14,
+                height: 1.3,
               ),
             ),
             
-            if (widget.imageUrl.isNotEmpty) ...[
-              const SizedBox(height: 12),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  widget.imageUrl,
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 200,
-                      color: Colors.grey[300],
-                      child: const Center(
-                        child: Icon(Icons.broken_image, size: 50),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-            
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             
             // Like section
             Row(
@@ -187,14 +159,14 @@ class _PostCardState extends State<PostCard> {
                       Icon(
                         isLiked ? Icons.favorite : Icons.favorite_border,
                         color: isLiked ? Colors.red : Colors.grey[600],
-                        size: 22,
+                        size: 20,
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: 4),
                       Text(
                         '$likesCount',
                         style: TextStyle(
                           color: Colors.grey[600],
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -202,12 +174,11 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
                 
-                // Loading indicator
                 if (isLoading) ...[
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 10),
                   const SizedBox(
-                    width: 16,
-                    height: 16,
+                    width: 14,
+                    height: 14,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                     ),

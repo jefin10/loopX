@@ -40,6 +40,8 @@ dependencies:
   go_router: ^14.0.0 
   image_picker: ^1.0.4
   permission_handler: ^11.0.0
+  flutter_riverpod: ^2.6.1
+  realtime_client: ^2.5.0
 
 dev_dependencies:
   flutter_test:

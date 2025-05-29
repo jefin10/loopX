@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loop_x/components/chats/chat_page.dart';
 import 'package:loop_x/screens/home_screen.dart';
 import 'package:loop_x/start/register_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,8 +9,9 @@ import 'package:loop_x/screens/add_screen.dart';
 import 'package:loop_x/screens/profile_screen.dart';
 import 'package:loop_x/screens/search_screen.dart';
 import 'package:go_router/go_router.dart';
+
 final GoRouter appRouter= GoRouter(
-  initialLocation: '/home',
+  initialLocation: '/',
   redirect:(context,state){
     final session = Supabase.instance.client.auth.currentSession;
     final isLoggingIn=state.fullPath=='/login' || state.fullPath=='/register';
@@ -17,7 +19,7 @@ final GoRouter appRouter= GoRouter(
       return '/login';
     }
     else if(session!=null && isLoggingIn){
-      return '/home';
+      return '/';
     }
     return null;
   },
@@ -34,6 +36,13 @@ final GoRouter appRouter= GoRouter(
         return const RegisterScreen();
       }
     ),
+    GoRoute(
+          path: '/chat/:chatId',
+          builder: (context, state) {
+            final chatId = state.pathParameters['chatId']!;
+            return ChatPage(chatId: chatId);
+          },
+        ),
     ShellRoute(
       builder: (context, state, child) {
         return Scaffold(
@@ -66,7 +75,7 @@ final GoRouter appRouter= GoRouter(
             onTap: (index){
               switch(index){
                 case 0:
-                  context.go('/home');
+                  context.go('/');
                   break;
                 case 1:
                   context.go('/search');
@@ -88,7 +97,7 @@ final GoRouter appRouter= GoRouter(
       },
       routes:[
         GoRoute(
-          path: '/home',
+          path: '/',
           builder:(context,state) => const HomeScreen()
         ),
         GoRoute(
@@ -107,6 +116,8 @@ final GoRouter appRouter= GoRouter(
           path: '/profile',
           builder:(context,state) => const ProfileScreen()
         ),
+        
+        
 
       ]
     )
@@ -115,7 +126,7 @@ final GoRouter appRouter= GoRouter(
 
 );
 int _calculateSelectedIndex(String location) {
-  if(location == '/home') {
+  if(location == '/') {
     return 0;
   } else if(location == '/search') {
     return 1;
