@@ -59,3 +59,5 @@ class _SearchHistoryController {
     await client.from('search_history').delete().eq('id', id);
   }
 }
+
+

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loop_x/components/chats/chat_page.dart';
+import 'package:loop_x/pages/profile_guest_page.dart';
 import 'package:loop_x/screens/home_screen.dart';
 import 'package:loop_x/start/register_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -43,6 +44,19 @@ final GoRouter appRouter= GoRouter(
             return ChatPage(chatId: chatId);
           },
         ),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) => const ProfileScreen(),
+      routes: [
+        GoRoute(
+          path: ':userId',
+          builder: (context, state) {
+            final userId = state.pathParameters['userId']!;
+            return ProfileGuestPage(userId: userId);
+          },
+        ),
+      ],
+    ),
     ShellRoute(
       builder: (context, state, child) {
         return Scaffold(

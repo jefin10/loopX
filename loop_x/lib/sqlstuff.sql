@@ -54,3 +54,9 @@ create table messages (
   foreign key (chat_room_id) references chat_rooms(id) on delete cascade,
   foreign key (sender_id) references auth.users(id)
 );
+create table search_history (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references auth.users(id) on delete cascade,
+  query text,
+  searched_at timestamp default now()
+);
