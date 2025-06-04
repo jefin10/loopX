@@ -11,58 +11,49 @@ import 'package:loop_x/screens/profile_screen.dart';
 import 'package:loop_x/screens/search_screen.dart';
 import 'package:go_router/go_router.dart';
 
-final GoRouter appRouter= GoRouter(
+final GoRouter appRouter = GoRouter(
   initialLocation: '/',
-  redirect:(context,state){
+  redirect: (context, state) {
     final session = Supabase.instance.client.auth.currentSession;
-    final isLoggingIn=state.fullPath=='/login' || state.fullPath=='/register';
-    if(session==null && !isLoggingIn){
+    final isLoggingIn = state.fullPath == '/login' || state.fullPath == '/register';
+    if (session == null && !isLoggingIn) {
       return '/login';
-    }
-    else if(session!=null && isLoggingIn){
+    } else if (session != null && isLoggingIn) {
       return '/';
     }
     return null;
   },
   routes: [
+    // Auth routes
     GoRoute(
       path: '/login',
-      builder:(context,state) {
+      builder: (context, state) {
         return const LoginScreen();
       }
     ),
     GoRoute(
       path: '/register',
-      builder:(context,state) {
+      builder: (context, state) {
         return const RegisterScreen();
       }
     ),
+    
+    // Chat detail route - outside main navigation
     GoRoute(
-          path: '/chat/:chatId',
-          builder: (context, state) {
-            final chatId = state.pathParameters['chatId']!;
-            return ChatPage(chatId: chatId);
-          },
-        ),
-    GoRoute(
-      path: '/profile',
-      builder: (context, state) => const ProfileScreen(),
-      routes: [
-        GoRoute(
-          path: ':userId',
-          builder: (context, state) {
-            final userId = state.pathParameters['userId']!;
-            return ProfileGuestPage(userId: userId);
-          },
-        ),
-      ],
+      path: '/chat/:chatId',
+      builder: (context, state) {
+        final chatId = state.pathParameters['chatId']!;
+        return ChatPage(chatId: chatId);
+      },
     ),
+    
+    // Main navigation shell
     ShellRoute(
       builder: (context, state, child) {
         return Scaffold(
           body: child,
           bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _calculateSelectedIndex(state.uri.toString()),
+            currentIndex: _calculateSelectedIndex(state.uri.path),
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
@@ -84,10 +75,9 @@ final GoRouter appRouter= GoRouter(
                 icon: Icon(Icons.person),
                 label: 'Profile',
               ),
-              
             ],
-            onTap: (index){
-              switch(index){
+            onTap: (index) {
+              switch (index) {
                 case 0:
                   context.go('/');
                   break;
@@ -103,53 +93,66 @@ final GoRouter appRouter= GoRouter(
                 case 4:
                   context.go('/profile');
                   break;
-                
               }
             },
           ),
         );
       },
-      routes:[
+      routes: [
         GoRoute(
           path: '/',
-          builder:(context,state) => const HomeScreen()
+          builder: (context, state) => const HomeScreen()
         ),
         GoRoute(
           path: '/search',
-          builder:(context,state) => const SearchScreen() 
+          builder: (context, state) => const SearchScreen() 
         ),
         GoRoute(
           path: '/add',
-          builder:(context,state) =>  AddScreen()
+          builder: (context, state) => const AddScreen()
         ),
         GoRoute(
           path: '/chat',
-          builder:(context,state) => const ChatScreen()
+          builder: (context, state) => const ChatScreen()
         ),
+        
+        // Profile routes within shell navigation
         GoRoute(
           path: '/profile',
-          builder:(context,state) => const ProfileScreen()
+          builder: (context, state) => const ProfileScreen(),
+          routes: [
+            GoRoute(
+              path: ':userId',
+              builder: (context, state) {
+                final userId = state.pathParameters['userId']!;
+                // Only show guest profile if ID is not the current user's ID
+                final currentUserId = Supabase.instance.client.auth.currentUser?.id;
+                if (userId == currentUserId) {
+                  return const ProfileScreen(); // Show current user profile
+                } else {
+                  return ProfileGuestPage(userId: userId); // Show guest profile
+                }
+              },
+            ),
+          ],
         ),
-        
-        
-
       ]
     )
   ],
-  
-
 );
+
 int _calculateSelectedIndex(String location) {
-  if(location == '/') {
-    return 0;
-  } else if(location == '/search') {
-    return 1;
-  } else if(location == '/add') {
-    return 2;
-  } else if(location == '/chat') {
-    return 3;
-  } else if(location == '/profile') {
+  // Make profile tab active when viewing any profile
+  if (location.startsWith('/profile')) {
     return 4;
-  } 
+  } else if (location.startsWith('/search')) {
+    return 1;
+  } else if (location.startsWith('/add')) {
+    return 2;
+  } else if (location.startsWith('/chat')) {
+    return 3;
+  } else if (location == '/') {
+    return 0;
+  }
   return 0;
 }

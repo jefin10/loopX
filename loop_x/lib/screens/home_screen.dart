@@ -85,17 +85,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Feed'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await auth.signOut();
-              context.go('/login');
-            },
-          ),
-        ],
+        title: Text("LoopX"),
+        
+        backgroundColor: Colors.transparent,
+        
       ),
+      
       body: RefreshIndicator(
         onRefresh: _fetchFeedPosts,
         child: _buildBody(),
@@ -109,6 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     
     if (error != null) {
+      
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

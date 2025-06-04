@@ -42,6 +42,7 @@ dependencies:
   permission_handler: ^11.0.0
   flutter_riverpod: ^2.6.1
   realtime_client: ^2.5.0
+  another_flushbar: ^1.12.30
 
 dev_dependencies:
   flutter_test:
