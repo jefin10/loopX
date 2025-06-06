@@ -80,6 +80,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 backgroundColor: Colors.black,
                 actions: [
                   IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      context.go('/profile/edit');
+                    },
+                  ),
+                  IconButton(
                     icon: const Icon(Icons.logout),
                     onPressed: () async {
                       await Supabase.instance.client.auth.signOut();

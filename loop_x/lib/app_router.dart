@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:loop_x/components/chats/chat_page.dart';
 import 'package:loop_x/pages/profile_guest_page.dart';
+import 'package:loop_x/pages/edit_profile.dart';
+
 import 'package:loop_x/screens/home_screen.dart';
 import 'package:loop_x/start/register_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -27,15 +29,11 @@ final GoRouter appRouter = GoRouter(
     // Auth routes
     GoRoute(
       path: '/login',
-      builder: (context, state) {
-        return const LoginScreen();
-      }
+      builder: (context, state) => const LoginScreen(),
     ),
     GoRoute(
       path: '/register',
-      builder: (context, state) {
-        return const RegisterScreen();
-      }
+      builder: (context, state) => const RegisterScreen(),
     ),
     
     // Chat detail route - outside main navigation
@@ -121,16 +119,22 @@ final GoRouter appRouter = GoRouter(
           path: '/profile',
           builder: (context, state) => const ProfileScreen(),
           routes: [
+            // Adding a more specific pattern to ensure 'edit' route is matched properly
             GoRoute(
-              path: ':userId',
+              path: 'edit', // Specific route first
+              name: 'edit-profile', // Adding a name helps with route priority
+              builder: (context, state) => const EditProfileScreen(),
+            ),
+            // Adding a more specific pattern for user ID to avoid conflict
+            GoRoute(
+              path: 'user/:userId', // More specific parameter route pattern
               builder: (context, state) {
                 final userId = state.pathParameters['userId']!;
-                // Only show guest profile if ID is not the current user's ID
                 final currentUserId = Supabase.instance.client.auth.currentUser?.id;
                 if (userId == currentUserId) {
-                  return const ProfileScreen(); // Show current user profile
+                  return const ProfileScreen();
                 } else {
-                  return ProfileGuestPage(userId: userId); // Show guest profile
+                  return ProfileGuestPage(userId: userId);
                 }
               },
             ),
