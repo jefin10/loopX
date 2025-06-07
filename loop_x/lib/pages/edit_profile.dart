@@ -102,6 +102,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<String?> _uploadImage(XFile imageFile) async {
     try {
+      //wow
       final userId = supabase.auth.currentUser!.id;
       final fileExt = path.extension(imageFile.path); // e.g., .jpg
       final fileName = '${const Uuid().v4()}$fileExt';
