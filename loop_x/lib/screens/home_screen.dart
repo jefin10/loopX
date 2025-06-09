@@ -85,7 +85,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("LoopX"),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Loop"),
+            Container(
+              child: Image.asset(
+                'assets/images/x.png',
+                height: 30,
+              ),
+            ),
+          ],
+        ),
+        centerTitle: true,
         
         backgroundColor: Colors.transparent,
         

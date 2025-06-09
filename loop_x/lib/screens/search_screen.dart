@@ -72,14 +72,27 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
+                      hintText: 'Search users...',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: BorderSide(color: Colors.deepPurple.shade300),
                       ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: BorderSide(color: Colors.deepPurple.shade300),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: BorderSide(color: Colors.deepPurple),
+                      ),
+                      filled: true,
+                      fillColor: Colors.black,
+                      contentPadding: EdgeInsets.all(16),
                       suffixIcon: IconButton(
                         onPressed: _handleSearch,
                         icon: const Icon(
                           Icons.search,
-                          color: Colors.grey,
+                          color: Colors.deepPurple,
                           size: 32.0,
                         ),
                       ),
@@ -131,7 +144,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               title: Text(user['username'] ?? 'Unknown'),
               onTap: () {
                 context.push(
-                  '/profile/${user['id']}',
+                  '/profile/user/${user['id']}',
                 );
               },
             );

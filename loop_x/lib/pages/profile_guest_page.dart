@@ -27,12 +27,22 @@ class _ProfileGuestPageState extends ConsumerState<ProfileGuestPage> {
   bool isLoading = true;
   bool isFollowLoading = false;
   bool isMessageLoading = false;
-  
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     _fetchUserProfile();
     _checkFollowingStatus();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 200), () {
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+        }
+      });
+    });
+
+
   }
   
   void _fetchUserProfile() async {
@@ -209,6 +219,12 @@ class _ProfileGuestPageState extends ConsumerState<ProfileGuestPage> {
       }
     }
   }
+  
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -221,122 +237,150 @@ class _ProfileGuestPageState extends ConsumerState<ProfileGuestPage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          leading: BackButton(
-            onPressed: () => context.pop(),
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                expandedHeight: 330,
+                pinned: true,
+                backgroundColor: Colors.black,
+                leading: BackButton(
+                  onPressed: () => context.pop(),
+                  color: Colors.white,
+                ),
+                bottom: TabBar(
+                  tabs: [
+                    Tab(text: 'Posts (${postResponse.length})'),
+                    Tab(text: 'Tweets (${tweetResponse.length})'),
+                  ],
+                ),
+                flexibleSpace: FlexibleSpaceBar(
+                  background: SafeArea(
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.only(top: 60, left: 16, right: 16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          CircleAvatar(
+                            radius: 48,
+                            backgroundImage: profileImageUrl.isNotEmpty
+                                ? NetworkImage(profileImageUrl)
+                                : const AssetImage('assets/images/default_profile.png') as ImageProvider,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            username.isNotEmpty ? username : 'Unknown',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            bio.isNotEmpty ? bio : 'No bio available',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.white70,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    "$followersCount",
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const Text(
+                                    "Followers",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white70,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(width: 40),
+                              Column(
+                                children: [
+                                  Text(
+                                    "$followingCount",
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const Text(
+                                    "Following",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white70,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          // Follow and Message buttons
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: isFollowLoading ? null : _toggleFollow,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: isFollowing ? Colors.grey[300] : Colors.blue,
+                                  foregroundColor: isFollowing ? Colors.black : Colors.white,
+                                  minimumSize: const Size(120, 40),
+                                ),
+                                child: isFollowLoading
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(strokeWidth: 2))
+                                    : Text(isFollowing ? 'Following' : 'Follow'),
+                              ),
+                              const SizedBox(width: 16),
+                              ElevatedButton(
+                                onPressed: isMessageLoading ? null : _sendMessage,
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(120, 40),
+                                ),
+                                child: isMessageLoading
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(strokeWidth: 2))
+                                    : const Text('Message'),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 30),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ];
+          },
+          body: TabBarView(
+            children: [
+              ProfilePosts(posts: postResponse),
+              ProfileTweets(tweets: tweetResponse),
+            ],
           ),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20),
-            Center(
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: profileImageUrl.isNotEmpty
-                    ? NetworkImage(profileImageUrl)
-                    : const AssetImage('assets/images/default_profile.png') as ImageProvider,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Center(
-              child: Text(
-                username.isNotEmpty ? username : 'Unknown',
-                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 8),
-            if (bio.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  bio,
-                  style: const TextStyle(fontSize: 16),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    Text(
-                      followersCount.toString(),
-                      style: const TextStyle(
-                        fontSize: 18, 
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    const Text('Followers'),
-                  ],
-                ),
-                const SizedBox(width: 32),
-                Column(
-                  children: [
-                    Text(
-                      followingCount.toString(),
-                      style: const TextStyle(
-                        fontSize: 18, 
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                    const Text('Following'),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // Follow and Message buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: isFollowLoading ? null : _toggleFollow,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: isFollowing ? Colors.grey[300] : Colors.blue,
-                    foregroundColor: isFollowing ? Colors.black : Colors.white,
-                    minimumSize: const Size(120, 40),
-                  ),
-                  child: isFollowLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2))
-                      : Text(isFollowing ? 'Following' : 'Follow'),
-                ),
-                const SizedBox(width: 16),
-                ElevatedButton(
-                  onPressed: isMessageLoading ? null : _sendMessage,
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(120, 40),
-                  ),
-                  child: isMessageLoading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2))
-                      : const Text('Message'),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // Tab bar for posts and tweets
-            TabBar(tabs: [
-              Tab(text: 'Posts (${postResponse.length})'),
-              Tab(text: 'Tweets (${tweetResponse.length})'),
-            ]),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  ProfilePosts(posts: postResponse),
-                  ProfileTweets(tweets: tweetResponse),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );

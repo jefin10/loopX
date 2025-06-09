@@ -14,28 +14,49 @@ class ChatOptions extends ConsumerWidget {
       return const Center(child: Text('Please sign in to view chats'));
     }
 
-    return ListView.builder(
-      itemCount: chats.length,
-      itemBuilder: (context, int index) {
-        final chat = chats[index];
-        final user1 = chat['user1_id'] as String;
-        final user2 = chat['user2_id'] as String;
-        final otherUserId = (user1 == currentUserId) ? user2 : user1;
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16.0),
+          child: TextButton(
+            onPressed: () {
+              context.push('/anonymous-chat');
+            },
+            child: Text("Go Anonymous"),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.purple,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: chats.length,
+            itemBuilder: (context, int index) {
+              final chat = chats[index];
+              final user1 = chat['user1_id'] as String;
+              final user2 = chat['user2_id'] as String;
+              final otherUserId = (user1 == currentUserId) ? user2 : user1;
 
-        return _ChatListItem(
-          chatId: chat['id'] as String,
-          otherUserId: otherUserId,
-        );
-      },
+              return _ChatListItem(
+                chatId: chat['id'] as String,
+                otherUserId: otherUserId,
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
 
 class _ChatListItem extends ConsumerWidget {
-  const _ChatListItem({
-    required this.chatId,
-    required this.otherUserId,
-  });
+  const _ChatListItem({required this.chatId, required this.otherUserId});
 
   final String chatId;
   final String otherUserId;
@@ -45,26 +66,29 @@ class _ChatListItem extends ConsumerWidget {
     final usernameAsync = ref.watch(usernameProvider(otherUserId));
 
     return usernameAsync.when(
-      loading: () => ListTile(
-        leading: const CircularProgressIndicator(),
-        title: const Text('Loading...'),
-        subtitle: Text('Chat ID: $chatId'),
-      ),
-      error: (error, stack) => ListTile(
-        leading: const Icon(Icons.error, color: Colors.red),
-        title: const Text('Error loading user'),
-        subtitle: Text('Chat ID: $chatId'),
-      ),
-      data: (username) => ListTile(
-        leading: CircleAvatar(
-          child: Text(username?[0].toUpperCase() ?? '?'),
-        ),
-        title: Text(username ?? 'Unknown user'),
-        subtitle: Text('Chat ID: $chatId'),
-        onTap: () {
-          context.go('/chat/$chatId'); // Navigate to chat page with chatId
-        },
-      ),
+      loading:
+          () => ListTile(
+            leading: const CircularProgressIndicator(),
+            title: const Text('Loading...'),
+            subtitle: Text('Chat ID: $chatId'),
+          ),
+      error:
+          (error, stack) => ListTile(
+            leading: const Icon(Icons.error, color: Colors.red),
+            title: const Text('Error loading user'),
+            subtitle: Text('Chat ID: $chatId'),
+          ),
+      data:
+          (username) => ListTile(
+            leading: CircleAvatar(
+              child: Text(username?[0].toUpperCase() ?? '?'),
+            ),
+            title: Text(username ?? 'Unknown user'),
+            subtitle: Text('Chat ID: $chatId'),
+            onTap: () {
+              context.go('/chat/$chatId'); // Navigate to chat page with chatId
+            },
+          ),
     );
   }
 }

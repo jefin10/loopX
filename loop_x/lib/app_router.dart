@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:loop_x/components/chats/chat_page.dart';
 import 'package:loop_x/pages/profile_guest_page.dart';
 import 'package:loop_x/pages/edit_profile.dart';
+import 'package:loop_x/pages/anonymous_chat.dart';
 
 import 'package:loop_x/screens/home_screen.dart';
 import 'package:loop_x/start/register_screen.dart';
@@ -43,6 +44,12 @@ final GoRouter appRouter = GoRouter(
         final chatId = state.pathParameters['chatId']!;
         return ChatPage(chatId: chatId);
       },
+    ),
+    
+    // Anonymous chat route
+    GoRoute(
+      path: '/anonymous-chat',
+      builder: (context, state) => const AnonymousChat(),
     ),
     
     // Main navigation shell
