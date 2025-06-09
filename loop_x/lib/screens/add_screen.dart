@@ -22,7 +22,6 @@ class _AddScreenState extends State<AddScreen> {
   }
 
   Future<void> _pickImage() async {
-    // Request permissions for Android and iOS
     Map<Permission, PermissionStatus> statuses = await [
       if (Platform.isAndroid) Permission.photos,
       if (Platform.isAndroid) Permission.storage,

@@ -86,7 +86,7 @@ class _ChatListItem extends ConsumerWidget {
             title: Text(username ?? 'Unknown user'),
             subtitle: Text('Chat ID: $chatId'),
             onTap: () {
-              context.go('/chat/$chatId'); // Navigate to chat page with chatId
+              context.go('/chat/$chatId'); 
             },
           ),
     );

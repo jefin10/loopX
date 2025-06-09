@@ -113,7 +113,6 @@ class _TweetCardState extends State<TweetCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile section
             Row(
               children: [
                 CircleAvatar(
@@ -137,7 +136,6 @@ class _TweetCardState extends State<TweetCard> {
             
             const SizedBox(height: 10),
             
-            // Tweet text
             Text(
               widget.text,
               style: const TextStyle(
@@ -148,7 +146,6 @@ class _TweetCardState extends State<TweetCard> {
             
             const SizedBox(height: 10),
             
-            // Like section
             Row(
               children: [
                 GestureDetector(

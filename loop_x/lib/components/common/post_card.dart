@@ -71,7 +71,6 @@ class _PostCardState extends State<PostCard> {
 
     try {
       if (isLiked) {
-        // Unlike the post
         await supabase
             .from('likes')
             .delete()
@@ -83,7 +82,6 @@ class _PostCardState extends State<PostCard> {
           isLiked = false;
         });
       } else {
-        // Like the post
         await supabase.from('likes').insert({
           'post_id': widget.postId,
           'user_id': currentUserId,
@@ -117,7 +115,6 @@ class _PostCardState extends State<PostCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile section
             Row(
               children: [
                 CircleAvatar(
@@ -126,7 +123,6 @@ class _PostCardState extends State<PostCard> {
                       : const AssetImage('assets/images/default_profile.png') as ImageProvider,
                   radius: 20,
                   onBackgroundImageError: (_, __) {
-                    // Handle image loading errors
                   },
                 ),
                 const SizedBox(width: 12),
@@ -176,7 +172,6 @@ class _PostCardState extends State<PostCard> {
             
             const SizedBox(height: 12),
             
-            // Like section
             Row(
               children: [
                 GestureDetector(
@@ -202,7 +197,6 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
                 
-                // Loading indicator
                 if (isLoading) ...[
                   const SizedBox(width: 12),
                   const SizedBox(
