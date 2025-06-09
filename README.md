@@ -44,3 +44,50 @@ LoopX is a modern mobile app inspired by Threads + Instagram, built using **Flut
 
 ## 🧭 Project Structure (Clean Architecture Inspired)
 
+```
+
+lib/
+├── auth/
+├── chat/
+├── components/
+├── constants/
+├── core/
+├── env/
+├── pages/
+├── providers/
+├── screens/
+├── start/
+├── widgets/
+├── app_router.dart
+└── main.dart
+```
+
+---
+
+## 🛠️ Setup Instructions
+
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/jefin10/loopX
+   cd loop_x
+   ```
+
+2. **Install dependencies**
+   ```bash
+   flutter pub get
+   ```
+
+3. **Setup `.env`**
+   ```env
+   SUPABASE_URL=your-url
+   SUPABASE_ANON_KEY=your-anon-key
+   ```
+
+4. **Run the app**
+   ```bash
+   flutter run
+   ```
+
+---
+
+
