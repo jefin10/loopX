@@ -20,11 +20,10 @@ LoopX is a modern mobile app inspired by Threads + Instagram, built using **Flut
 
 | Layer | Stack |
 |-------|-------|
-| UI    | Flutter (Material 3), go_router |
-| State Mgmt | Coming soon: Riverpod |
+| UI    | Flutter , go_router |
+| State Mgmt |  Riverpod |
 | Backend | Supabase (Auth, Realtime DB, Storage) |
 | DB     | PostgreSQL (via Supabase) |
-| Future | Hive for offline caching, Clean Architecture, Edge Functions, AI add-ons |
 
 ---
 
