@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: const Text('Login'),
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(3),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                     backgroundColor: Colors.purple,
                     padding:
