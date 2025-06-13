@@ -162,6 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     
     return ListView.builder(
+      primary: true,
       itemCount: posts.length,
       padding: const EdgeInsets.only(bottom: 20),
       itemBuilder: (context, index) {

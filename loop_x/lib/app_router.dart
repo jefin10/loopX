@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loop_x/components/chats/chat_page.dart';
 import 'package:loop_x/pages/profile_guest_page.dart';
 import 'package:loop_x/pages/edit_profile.dart';
 import 'package:loop_x/pages/anonymous_chat.dart';
-
 import 'package:loop_x/screens/home_screen.dart';
 import 'package:loop_x/start/register_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,6 +13,7 @@ import 'package:loop_x/screens/add_screen.dart';
 import 'package:loop_x/screens/profile_screen.dart';
 import 'package:loop_x/screens/search_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loop_x/widgets/curved_navigation_bar.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -27,7 +28,6 @@ final GoRouter appRouter = GoRouter(
     return null;
   },
   routes: [
-    // Auth routes
     GoRoute(
       path: '/login',
       builder: (context, state) => const LoginScreen(),
@@ -37,7 +37,6 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const RegisterScreen(),
     ),
     
-    // Chat detail route - outside main navigation
     GoRoute(
       path: '/chat/:chatId',
       builder: (context, state) {
@@ -56,31 +55,10 @@ final GoRouter appRouter = GoRouter(
     ShellRoute(
       builder: (context, state, child) {
         return Scaffold(
+          extendBody: true,
           body: child,
-          bottomNavigationBar: BottomNavigationBar(
+          bottomNavigationBar: CurvedNavigationBar(
             currentIndex: _calculateSelectedIndex(state.uri.path),
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Home',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                label: 'Search',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.add_box_outlined),
-                label: 'New',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.chat),
-                label: 'Chat',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.person),
-                label: 'Profile',
-              ),
-            ],
             onTap: (index) {
               switch (index) {
                 case 0:
@@ -121,20 +99,17 @@ final GoRouter appRouter = GoRouter(
           builder: (context, state) => const ChatScreen()
         ),
         
-        // Profile routes within shell navigation
         GoRoute(
           path: '/profile',
           builder: (context, state) => const ProfileScreen(),
           routes: [
-            // Adding a more specific pattern to ensure 'edit' route is matched properly
             GoRoute(
-              path: 'edit', // Specific route first
-              name: 'edit-profile', // Adding a name helps with route priority
+              path: 'edit',
+              name: 'edit-profile',
               builder: (context, state) => const EditProfileScreen(),
             ),
-            // Adding a more specific pattern for user ID to avoid conflict
             GoRoute(
-              path: 'user/:userId', // More specific parameter route pattern
+              path: 'user/:userId',
               builder: (context, state) {
                 final userId = state.pathParameters['userId']!;
                 final currentUserId = Supabase.instance.client.auth.currentUser?.id;
